@@ -1,0 +1,279 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-04-01",
+  "source_reference": "https://disputepack.pages.dev/reason-codes",
+  "processor_limits": {
+    "stripe": {
+      "max_total_mb": 4.5,
+      "max_pages": 49,
+      "formats": ["pdf", "jpeg", "png"]
+    },
+    "shopify_payments": {
+      "max_total_mb": 4.0,
+      "max_pages": 45,
+      "formats": ["pdf", "jpeg", "png"]
+    }
+  },
+  "reason_codes": [
+    {
+      "code": "10.4",
+      "network": "Visa",
+      "category": "Fraud",
+      "title": "Other Fraud - Card-Absent Environment",
+      "response_window_days": 30,
+      "ce3_eligible": true,
+      "required_evidence": [
+        "Two or more prior undisputed transactions settled 120 to 365 calendar days before the disputed transaction",
+        "Match on at least 2 of 4 core elements (IP Address, Device ID, Account ID, Shipping Address)",
+        "At least 1 matching element must be IP Address or Device ID / Fingerprint",
+        "Proof of delivery or digital service access logs tied to the disputed order"
+      ],
+      "optional_supporting_evidence": [
+        "AVS and CVV match response codes from authorization log",
+        "Customer support emails confirming account ownership",
+        "3D Secure authentication data if applicable"
+      ],
+      "common_rejection_reasons": [
+        "Historical transactions fall outside the 120 to 365 day window",
+        "Only Account ID and Shipping Address match without IP or Device ID",
+        "Historical transaction was itself disputed or refunded for fraud"
+      ],
+      "stripe_evidence_fields": [
+        "uncategorized_file",
+        "access_activity_log",
+        "customer_email_address",
+        "customer_purchase_ip",
+        "shipping_tracking_number"
+      ]
+    },
+    {
+      "code": "13.1",
+      "network": "Visa",
+      "category": "Consumer Dispute",
+      "title": "Merchandise / Services Not Received",
+      "response_window_days": 30,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Proof of delivery (carrier tracking with delivery date and destination matching order)",
+        "For digital goods or SaaS: server access logs showing IP, timestamp, and account activity after purchase",
+        "Itemized order invoice with billing and shipping addresses"
+      ],
+      "optional_supporting_evidence": [
+        "Signed proof of delivery or GPS delivery photo",
+        "Email or chat communication where customer acknowledges receipt",
+        "Shipping policy disclosed at checkout"
+      ],
+      "common_rejection_reasons": [
+        "Tracking number shows in-transit or label-created instead of delivered",
+        "Delivery address city or postal code does not match the cardholder order",
+        "No usage logs provided for digital or SaaS delivery"
+      ],
+      "stripe_evidence_fields": [
+        "shipping_carrier",
+        "shipping_tracking_number",
+        "shipping_date",
+        "shipping_documentation",
+        "service_documentation",
+        "access_activity_log"
+      ]
+    },
+    {
+      "code": "13.2",
+      "network": "Visa",
+      "category": "Consumer Dispute",
+      "title": "Cancelled Recurring Transaction",
+      "response_window_days": 30,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Proof that cardholder agreed to recurring billing terms at checkout",
+        "Proof that cancellation request was not received prior to the billing date or did not follow disclosed cancellation policy",
+        "Records showing continued service access after the disputed billing date"
+      ],
+      "optional_supporting_evidence": [
+        "Pre-renewal email notification logs with delivery timestamps",
+        "Account settings audit log showing subscription remained active",
+        "Support ticket history"
+      ],
+      "common_rejection_reasons": [
+        "Cancellation policy was buried and not clearly presented at checkout",
+        "Customer emailed to cancel before renewal and merchant failed to process it",
+        "No proof of active usage or renewal notice"
+      ],
+      "stripe_evidence_fields": [
+        "cancellation_policy",
+        "cancellation_policy_disclosure",
+        "cancellation_rebuttal",
+        "access_activity_log",
+        "customer_communication"
+      ]
+    },
+    {
+      "code": "13.3",
+      "network": "Visa",
+      "category": "Consumer Dispute",
+      "title": "Not as Described or Defective Merchandise / Services",
+      "response_window_days": 30,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Product or service description shown to customer at the time of purchase",
+        "Evidence refuting the specific defect or mismatch claim (photos, QA logs, feature logs)",
+        "Proof that customer did not attempt to return the merchandise or contact support"
+      ],
+      "optional_supporting_evidence": [
+        "Return and refund policy accepted at checkout",
+        "Support conversation offering replacement or troubleshooting",
+        "Pre-shipment inspection photos"
+      ],
+      "common_rejection_reasons": [
+        "Generic rebuttal that does not address the cardholder's specific complaint",
+        "No proof of what was advertised on the product page at checkout"
+      ],
+      "stripe_evidence_fields": [
+        "product_description",
+        "customer_communication",
+        "refund_policy",
+        "refund_policy_disclosure",
+        "uncategorized_file"
+      ]
+    },
+    {
+      "code": "13.6",
+      "network": "Visa",
+      "category": "Consumer Dispute",
+      "title": "Credit Not Processed",
+      "response_window_days": 30,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Refund transaction receipt showing credit was already issued to the same card (ARN / refund ID)",
+        "Or refund policy showing the order did not qualify for a refund (e.g. non-refundable item, outside return window)"
+      ],
+      "optional_supporting_evidence": [
+        "Return shipping tracking showing item was never returned",
+        "Email confirming refund processing timeline or store credit agreement"
+      ],
+      "common_rejection_reasons": [
+        "Refund was issued to store credit without cardholder consent when card refund was promised",
+        "Missing Acquirer Reference Number (ARN) for an already-processed refund"
+      ],
+      "stripe_evidence_fields": [
+        "refund_policy",
+        "refund_policy_disclosure",
+        "refund_refusal_explanation",
+        "customer_communication"
+      ]
+    },
+    {
+      "code": "4837",
+      "network": "Mastercard",
+      "category": "Fraud",
+      "title": "No Cardholder Authorization",
+      "response_window_days": 45,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Proof of cardholder link to the transaction (AVS/CVV match, device/IP history, prior undisputed orders)",
+        "Proof of delivery to cardholder billing or verified shipping address",
+        "3D Secure / Identity Check authentication data if present"
+      ],
+      "optional_supporting_evidence": [
+        "Account login history and prior non-disputed purchases",
+        "Customer support correspondence from the registered email"
+      ],
+      "common_rejection_reasons": [
+        "Submitting only an invoice without technical authorization or delivery proof",
+        "Shipping to a freight forwarder with no prior account history"
+      ],
+      "stripe_evidence_fields": [
+        "customer_purchase_ip",
+        "access_activity_log",
+        "shipping_documentation",
+        "customer_communication",
+        "uncategorized_file"
+      ]
+    },
+    {
+      "code": "4853",
+      "network": "Mastercard",
+      "category": "Cardholder Dispute",
+      "title": "Cardholder Dispute (Defective, Not as Described, Cancelled Recurring, Credit Not Processed)",
+      "response_window_days": 45,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Evidence directly addressing the sub-reason (product description, cancellation terms, or refund ARN)",
+        "Checkout terms and refund/cancellation policy disclosure",
+        "Customer communication log showing resolution attempts"
+      ],
+      "optional_supporting_evidence": [
+        "Service usage logs or QA inspection records",
+        "Signed contract or statement of work for B2B services"
+      ],
+      "common_rejection_reasons": [
+        "Failing to identify which Mastercard 4853 sub-category applies",
+        "Missing checkout disclosure screenshots for refund or cancellation terms"
+      ],
+      "stripe_evidence_fields": [
+        "product_description",
+        "cancellation_policy",
+        "refund_policy",
+        "customer_communication",
+        "uncategorized_file"
+      ]
+    },
+    {
+      "code": "4855",
+      "network": "Mastercard",
+      "category": "Cardholder Dispute",
+      "title": "Goods or Services Not Provided",
+      "response_window_days": 45,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "Carrier tracking confirming delivery to the cardholder's provided address",
+        "Or digital delivery logs showing download/access after payment",
+        "Order confirmation with itemized goods or services"
+      ],
+      "optional_supporting_evidence": [
+        "Delivery signature or photo confirmation",
+        "Customer communication confirming receipt"
+      ],
+      "common_rejection_reasons": [
+        "Missing proof of delivery date or destination",
+        "Item shipped after the promised delivery date without customer agreement"
+      ],
+      "stripe_evidence_fields": [
+        "shipping_carrier",
+        "shipping_tracking_number",
+        "shipping_documentation",
+        "service_documentation",
+        "access_activity_log"
+      ]
+    },
+    {
+      "code": "F29 / C08",
+      "network": "American Express",
+      "category": "Fraud / Consumer Dispute",
+      "title": "Card Not Present Fraud (F29) / Goods or Services Not Received (C08)",
+      "response_window_days": 20,
+      "ce3_eligible": false,
+      "required_evidence": [
+        "For F29: proof of delivery to cardholder's verified billing address, AVS/CID match, and prior account history",
+        "For C08: carrier tracking showing delivery or digital access logs proving service fulfillment",
+        "Itemized receipt matching the exact disputed amount"
+      ],
+      "optional_supporting_evidence": [
+        "SafeKey authentication data",
+        "Signed proof of delivery",
+        "Direct cardholder email or chat logs"
+      ],
+      "common_rejection_reasons": [
+        "Missing the shorter 20-day Amex response deadline",
+        "Inability to link shipping address to the cardholder for F29 disputes"
+      ],
+      "stripe_evidence_fields": [
+        "shipping_documentation",
+        "service_documentation",
+        "access_activity_log",
+        "customer_communication",
+        "uncategorized_file"
+      ]
+    }
+  ]
+}
